@@ -1,7 +1,19 @@
 <?php
 /**
- * Implements hook_menu().
+ * @file
+ * Exposes other Database tables to Views.
  */
+
+/**
+ * Implements hook_config_info().
+ */
+function views_expose_tables_config_info() {
+  $prefixes['views_expose_tables.settings'] = array(
+    'label' => t('Views Expose Tables'),
+    'group' => t('Configuration'),
+  );
+  return $prefixes;
+}
 
 /**
  * Implements hook_menu().
@@ -28,13 +40,12 @@ function views_expose_tables_admin_form($form, &$form_state) {
 
   $result = db_query("SHOW TABLES");
   if (!$result) {
-    backdrop_set_message('Could not run query: ' . mysql_error());
-    exit;
+    backdrop_set_message('Unable to access MySQL tables.', 'error');
   }
 
   if ($result->rowCount()) {
     while ($row = $result->fetchObject()) {
-		   $tables[] = $row->{'Tables_in_' . $db};
+		  $tables[] = $row->{'Tables_in_' . $db};
     }
   }
 
@@ -43,15 +54,18 @@ function views_expose_tables_admin_form($form, &$form_state) {
     $options[$table] = $table;
   }
 
-  $empty = array();
-
+  $config = config('views_expose_tables.settings');
+  $form['#config'] = 'views_expose_tables.settings';
   $form['expose_tables'] = array(
    '#type' => 'checkboxes',
    '#options' => $options,
    '#title' => t('Tables to expose as raw data to views'),
    '#description' => t('Check the tables to expose to views as base tables'),
-   '#default_value' => variable_get('expose_tables', $empty),
+   '#default_value' => $config->get('expose_tables'),
   );
+  if (!$result) {
+    $form['expose_tables']['disabled'] = TRUE;
+  }
 
   $form['#submit'][] = 'views_expose_tables_admin_form_submit';
 
@@ -65,7 +79,6 @@ function views_expose_tables_admin_form($form, &$form_state) {
  * @see views_expose_tables_admin_form().
  */
 function views_expose_tables_admin_form_submit($form, &$form_state) {
-  variable_set('expose_tables', $form_state['values']['expose_tables']);
   // Clear views cache, not views data cache.
   cache_clear_all('*', 'cache_views', TRUE);
 }
@@ -76,6 +89,6 @@ function views_expose_tables_admin_form_submit($form, &$form_state) {
 function views_expose_tables_views_api() {
   return array(
     'api' => 3,
-    'path' => backdrop_get_path('module', 'views_expose_tables') . '/includes',
+    'path' => backdrop_get_path('module', 'views_expose_tables'),
   );
 }

@@ -1,0 +1,5 @@
+{
+    "_config_name": "views_expose_tables.settings",
+    "_module": "views_expose_tables",
+    "expose_tables": []
+}

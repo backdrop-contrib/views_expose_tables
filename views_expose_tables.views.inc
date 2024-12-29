@@ -5,10 +5,10 @@
 function views_expose_tables_views_data() {
 
   // get table information
-  $tables = variable_get('expose_tables', array());
+  $tables = config_get('views_expose_tables.settings', 'expose_tables');
 
   //if tables is empty then return;
-  if (count($tables) == 0) {
+  if (!is_array($tables) || count($tables) == 0) {
     return;
   }
 

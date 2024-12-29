@@ -4,8 +4,11 @@
  * Install, Uninstall, andd update functions.
  */
 
-function views_expose_tables_uninstall() {
-
+/**
+ * Convert variables to config.
+ */
+function views_expose_tables_update_1000() {
+  $tables = update_variable_get('expose_tables', array());
+  config_set('views_expose_tables.settings', 'expose_tables', $tables);
   variable_del('expose_tables');
-
 }
