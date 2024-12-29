@@ -1,7 +1,11 @@
 <?php
+/**
+ * @file
+ * Install, Uninstall, andd update functions.
+ */
 
 function views_expose_tables_uninstall() {
 
-variable_del('expose_tables');
+  variable_del('expose_tables');
 
 }

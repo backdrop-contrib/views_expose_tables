@@ -1,15 +1,10 @@
+type = module
 name = Views Expose Tables
-description = Exposes Drupal DB tables to Views
-core = 7.x
-version = "7.x-dev"
-project = "Views Expose Tables"
-
+description = Exposes other Database tables to Views
+backdrop = 1.x
 package = Views
 
 configure = admin/structure/views/expose_tables
 
 dependencies[] = views
-
-files[] = views_expose_table.module
-files[] = views_expose_table.views.inc
 
